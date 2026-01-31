@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://djvcf7ujybifv"]
+
+[ext_resource type="Texture2D" path="res://assets/art/coin.png" id="1_fgdtj"]
+[ext_resource type="Script" uid="uid://nop8bawppng4" path="res://scripts/components/collectable_component.gd" id="2_t11da"]
+[ext_resource type="Resource" path="res://data/items/coin.tres" id="3_t11da"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_t11da"]
+radius = 8.0
+
+[node name="Coin" type="Sprite2D"]
+texture = ExtResource("1_fgdtj")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_t11da")
+
+[node name="CollectableComponent" type="Node" parent="Area2D" node_paths=PackedStringArray("root_to_delete")]
+script = ExtResource("2_t11da")
+root_to_delete = NodePath("../..")
+item = ExtResource("3_t11da")
+amount = null
+metadata/_custom_type_script = "uid://d2mt352cnekjd"

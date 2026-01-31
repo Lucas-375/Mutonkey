@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://dy1rcl6ch2o75"]
+
+[ext_resource type="Script" uid="uid://bxxqyxarkm4wy" path="res://scenes/inventory/item_drag_preview.gd" id="1_tj01u"]
+[ext_resource type="Texture2D" path="res://assets/art/Coin.png" id="2_guwgf"]
+
+[node name="ItemDragPreview" type="Control"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 3
+anchors_preset = 0
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_tj01u")
+
+[node name="Icon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_right = 16.0
+offset_bottom = 16.0
+texture = ExtResource("2_guwgf")
+
+[node name="CountLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 22.0
+offset_right = 65.0
+offset_bottom = 67.0
+theme_override_colors/font_color = Color(0.8560673, 0.8560673, 0.85606724, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.93333334)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "64"
+horizontal_alignment = 1

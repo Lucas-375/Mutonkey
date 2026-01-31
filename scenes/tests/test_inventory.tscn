@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=3 uid="uid://8xgldvpu2edi"]
+
+[ext_resource type="Script" uid="uid://bab0nmo1p545v" path="res://scenes/tests/test_inventory.gd" id="1_wxn22"]
+[ext_resource type="Script" uid="uid://8kcpkp3oy4px" path="res://scripts/resources/inventory.gd" id="2_536qi"]
+[ext_resource type="PackedScene" uid="uid://bjhconksekqvj" path="res://scenes/inventory/inventory_ui.tscn" id="2_nbm8e"]
+[ext_resource type="PackedScene" uid="uid://2nv0ew68v50v" path="res://scenes/inventory/inventory_slot.tscn" id="3_536qi"]
+
+[sub_resource type="Resource" id="Resource_wxn22"]
+script = ExtResource("2_536qi")
+size = null
+metadata/_custom_type_script = "uid://btjkcqhts4lo5"
+
+[node name="TestInventory" type="Node"]
+script = ExtResource("1_wxn22")
+
+[node name="InventoryUI" parent="." instance=ExtResource("2_nbm8e")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -241.0
+offset_right = -30.0
+offset_bottom = -241.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+inventory = SubResource("Resource_wxn22")
+slot_scene = ExtResource("3_536qi")
+
+[node name="AddCoinButton" type="Button" parent="."]
+offset_left = 470.0
+offset_top = 498.0
+offset_right = 626.0
+offset_bottom = 552.0
+text = "Add Coin"
+
+[node name="AddStickButton" type="Button" parent="."]
+offset_left = 296.0
+offset_top = 499.0
+offset_right = 452.0
+offset_bottom = 553.0
+text = "Add Stick"
+
+[node name="ToggleMaxButton" type="Button" parent="."]
+offset_left = 642.0
+offset_top = 498.0
+offset_right = 798.0
+offset_bottom = 552.0
+text = "Max Add (OFF)"

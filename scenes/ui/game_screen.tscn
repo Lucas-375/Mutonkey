@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://c063mdnmwmb5u"]
+
+[ext_resource type="PackedScene" uid="uid://bjhconksekqvj" path="res://scenes/inventory/inventory_ui.tscn" id="2_e2vrk"]
+[ext_resource type="Script" uid="uid://8kcpkp3oy4px" path="res://scripts/resources/inventory.gd" id="3_gkbp4"]
+[ext_resource type="PackedScene" path="res://scenes/inventory/inventory_slot.tscn" id="3_gusqm"]
+
+[sub_resource type="Resource" id="Resource_0kkfd"]
+script = ExtResource("3_gkbp4")
+size = null
+metadata/_custom_type_script = "uid://dayas2nn1bbq8"
+
+[node name="GameScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InventoryUI" parent="." instance=ExtResource("2_e2vrk")]
+visible = false
+layout_mode = 1
+inventory = SubResource("Resource_0kkfd")
+slot_scene = ExtResource("3_gusqm")

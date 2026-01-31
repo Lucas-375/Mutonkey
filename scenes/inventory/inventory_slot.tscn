@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://2nv0ew68v50v"]
+
+[ext_resource type="Script" uid="uid://r6f7fqwurg73" path="res://scenes/inventory/inventory_slot.gd" id="1_c7w7p"]
+[ext_resource type="Texture2D" path="res://assets/art/slot_background.png" id="2_0uvgv"]
+[ext_resource type="Texture2D" path="res://assets/art/Coin.png" id="3_td8r7"]
+
+[node name="InventorySlot" type="Control"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 64.0
+offset_bottom = 64.0
+script = ExtResource("1_c7w7p")
+index = null
+
+[node name="Background" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 1
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("2_0uvgv")
+
+[node name="Icon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_right = 16.0
+offset_bottom = 16.0
+texture = ExtResource("3_td8r7")
+
+[node name="CountLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 22.0
+offset_right = 65.0
+offset_bottom = 67.0
+theme_override_colors/font_color = Color(0.8560673, 0.8560673, 0.85606724, 1)
+theme_override_colors/font_shadow_color = Color(0.14201945, 0.14588228, 0.17292488, 0.8117647)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "64"
+horizontal_alignment = 1
