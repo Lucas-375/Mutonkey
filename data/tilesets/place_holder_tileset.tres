@@ -1,0 +1,18 @@
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://3e5s0bxyiuoa"]
+
+[ext_resource type="Texture2D" uid="uid://dm075qgadpusl" path="res://assets/art/place_holder_tile1.tres" id="1_p5q3f"]
+[ext_resource type="Texture2D" uid="uid://dr8b8jnosxt7n" path="res://assets/art/wall.tres" id="2_wb0q8"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vabso"]
+texture = ExtResource("1_p5q3f")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oe06q"]
+texture = ExtResource("2_wb0q8")
+0:0/0 = 0
+
+[resource]
+physics_layer_0/collision_layer = 2
+physics_layer_0/collision_mask = 0
+sources/0 = SubResource("TileSetAtlasSource_vabso")
+sources/2 = SubResource("TileSetAtlasSource_oe06q")
