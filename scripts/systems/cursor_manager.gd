@@ -140,11 +140,9 @@ func _pick_up_half(inventory: Inventory, index: int):
 	if slot_stack == null:
 		return
 	
-	var half = ceil(slot_stack.quantity / 2)
+	var half = ceil(float(slot_stack.quantity) / 2)
 	if half <= 0:
 		return
-	
-	print(half)
 	
 	inventory.remove_from_stack(index, half)
 	
