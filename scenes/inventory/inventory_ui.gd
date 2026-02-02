@@ -15,7 +15,6 @@ func _ready() -> void:
 
 func create_slots():
 	for i in range(inventory.slots.size()):
-		print(str(inventory.slots.size()))
 		var slot_instance := slot_scene.instantiate() as InventorySlot
 		slot_instance.index = i
 		slot_instance.inventory = inventory

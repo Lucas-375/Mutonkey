@@ -4,6 +4,18 @@ signal cursor_stack_changed(new_stack: ItemStack)
 
 @export var cursor_stack: ItemStack = null
 
+var right_click_pressed: bool = false:
+	set(value):
+		right_click_pressed = value
+		if right_click_pressed == false:
+			last_added_inventory = null
+			last_added_index = -1
+
+## Last inventory modified through adding one to stack on right click.
+var last_added_inventory: Inventory = null
+## Last slot's index modified through adding one to stack on right click.
+var last_added_index: int = -1
+
 ## Sets the cursor stack to `value`.
 func set_cursor_stack(value: ItemStack):
 	cursor_stack = value
@@ -152,8 +164,17 @@ func _pick_up_half(inventory: Inventory, index: int):
 		add_to_cursor(half)
 
 ## Returns true if the cursor contains an item and the slot is empty.
-func _can_place_one_into_empty(slot_stack: ItemStack) -> bool:
-	return cursor_stack != null and slot_stack == null
+func _can_place_one_into_empty(inventory: Inventory, index: int) -> bool:
+	var slot_stack := inventory.get_slot(index)
+	
+	return (
+		cursor_stack != null
+		and slot_stack == null
+		and not (
+			inventory == last_added_inventory 
+			and index == last_added_index
+		)
+	)
 
 ## Removes one from cursor and places one into the empty slot.
 func _place_one_into_empty(inventory: Inventory, index: int):
@@ -164,18 +185,28 @@ func _place_one_into_empty(inventory: Inventory, index: int):
 	if slot_stack != null:
 		return
 	
+	last_added_inventory = inventory
+	last_added_index = index
+	print(str(last_added_index))
+	
 	var new_stack := ItemStack.new(cursor_stack.item, 1)
 	remove_from_cursor(1)
 	inventory.set_slot(index, new_stack)
 
 ## Returns true if both stacks exist, both stacks have the same item,
 ## and the slot stack is not full.
-func _can_place_one_into_same(slot_stack: ItemStack) -> bool:
+func _can_place_one_into_same(inventory: Inventory, index: int) -> bool:
+	var slot_stack := inventory.get_slot(index)
+	
 	return (
 		cursor_stack != null
 		and slot_stack != null
 		and cursor_stack.item == slot_stack.item
 		and slot_stack.quantity < slot_stack.item.max_stack
+		and not (
+			inventory == last_added_inventory 
+			and index == last_added_index
+		)
 	)
 
 ## Removes one from the cursor and adds it to the slot stack.
@@ -186,6 +217,9 @@ func _place_one_into_same(inventory: Inventory, index: int):
 	var slot_stack := inventory.get_slot(index)
 	if slot_stack == null:
 		return
+	
+	last_added_inventory = inventory
+	last_added_index = index
 	
 	remove_from_cursor(1)
 	inventory.add_to_stack(index, 1)
@@ -201,10 +235,10 @@ func handle_right_click(inventory: Inventory, index: int):
 		_pick_up_half(inventory, index)
 		return
 	
-	elif _can_place_one_into_empty(slot_stack):
+	elif _can_place_one_into_empty(inventory, index):
 		_place_one_into_empty(inventory, index)
 		return
 	
-	elif _can_place_one_into_same(slot_stack):
+	elif _can_place_one_into_same(inventory, index):
 		_place_one_into_same(inventory, index)
 		return
