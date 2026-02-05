@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 ItemDatabase="*res://scripts/systems/item_database.gd"
-CursorManager="*res://scripts/systems/cursor_manager.gd"
+InventoryCursor="*res://scripts/systems/inventory_cursor.gd"
 
 [display]
 
