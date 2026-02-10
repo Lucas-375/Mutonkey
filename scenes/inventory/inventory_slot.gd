@@ -22,8 +22,3 @@ func update_slot():
 	else:
 		$CountLabel.show()
 		$CountLabel.text = str(stack.quantity)
-
-func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			InventoryActions.primary_interaction(inventory, index)

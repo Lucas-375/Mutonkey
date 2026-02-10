@@ -4,24 +4,23 @@ class_name InventoryActions
 static var _last_interacted_slot: int = -1
 static var _last_interacted_inv: Inventory = null
 
-## The main interaciton (Pickup all, Place all, Swap, or Merge)
+static var _drag_inventory: Inventory = null
+static var _drag_starting_stack: ItemStack = null
+static var _drag_indices: Array[int] = []
+
+
 static func primary_interaction(inventory: Inventory, index: int):
-	if (_last_interacted_inv == inventory 
-	and _last_interacted_slot == index):
-		return
-	
 	var slot_stack := inventory.get_slot(index)
 	var held := InventoryCursor.get_item_stack()
 	
-	if not held and slot_stack:
-		_take_all(inventory, index)
-	elif held and not slot_stack:
-		_place_all(inventory, index)
-	elif held and slot_stack:
-		if held.item == slot_stack.item:
-			_merge_stacks(inventory, index)
-		else:
-			_swap_with_cursor(inventory, index)
+	if not held:
+		if slot_stack:
+			_take_all(inventory, index)
+		return
+	
+	_drag_indices = [index]
+	_drag_inventory = inventory
+	_drag_starting_stack = held	
 
 ## The alternate interaction (Splif half, Drop single)
 static func secondary_interaction(inventory: Inventory, index: int):
@@ -45,7 +44,73 @@ static func end_interaction_session():
 	_last_interacted_inv = null
 	_last_interacted_slot = -1
 
+static func clean_up_drag():
+	_drag_indices = []
+	_drag_inventory = null
+	_drag_starting_stack = null
+
 # --- Helpers ---
+
+static func _end_primary_drag():
+	if _drag_indices.is_empty():
+		clean_up_drag()
+	
+	elif _drag_indices.size() == 1:
+		_handle_single_place_or_swap(_drag_inventory, _drag_indices[0])
+	
+	else:
+		_distribute_held_stack()
+	
+	clean_up_drag()
+
+static func _handle_single_place_or_swap(inventory: Inventory, index: int):
+	var slot_stack := inventory.get_slot(index)
+	var held := InventoryCursor.get_item_stack()
+	if not held:
+		return
+	
+	if not slot_stack:
+		_place_all(inventory, index)
+	elif slot_stack.item == held.item:
+		_merge_stacks(inventory, index)
+	else:
+		_swap_with_cursor(inventory, index)
+
+static func _update_primary_drag(inventory: Inventory, index: int):
+	if inventory != _drag_inventory or index in _drag_indices:
+		return
+	
+	var slot_stack := _drag_inventory.get_slot(index)
+	
+	if slot_stack == null or _drag_starting_stack.item == slot_stack.item:
+		_drag_indices.append(index)
+
+static func _distribute_held_stack():
+	var held := InventoryCursor.get_item_stack()
+	if not held:
+		return
+	
+	var count := _drag_indices.size()
+	var amount_per_slot := int(float(held.quantity) / count)
+	
+	if amount_per_slot == 0:
+		return
+	
+	for idx in _drag_indices:
+		var slot_stack := _drag_inventory.get_slot(idx)
+		
+		if slot_stack == null or slot_stack.item == held.item:
+			var current_quantity := 0 if not slot_stack else slot_stack.quantity
+			var space := held.item.max_stack - current_quantity
+			
+			var to_add = min(space, amount_per_slot)
+			
+			if not slot_stack:
+				_drag_inventory.set_slot(idx, ItemStack.new(held.item, to_add))
+			else:
+				_drag_inventory.add_to_stack(idx, to_add)
+			
+			InventoryCursor.subtract(to_add)
 
 static func _take_all(inventory: Inventory, index: int):
 	InventoryCursor.set_item_stack(inventory.get_slot(index))

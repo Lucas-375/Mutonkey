@@ -17,6 +17,9 @@ func set_item_stack(value: ItemStack):
 func clear():
 	set_item_stack(null)
 
+func is_holding():
+	return true if _stack else false
+
 ## Adds up to `amount` to the stack.
 ## Returns the leftover that could not fit.
 func add(amount: int) -> int:
