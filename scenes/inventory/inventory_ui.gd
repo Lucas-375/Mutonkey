@@ -13,6 +13,7 @@ var _repeat_rate := 0.08
 
 var _left_click_held := false
 
+## Index hovered by mouse, -1 represents that no slot is hovered.
 var _hovered_index := -1
 
 func _ready() -> void:
@@ -37,6 +38,15 @@ func _process(delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				_left_click_held = true
+				if _hovered_index != -1:
+					InventoryActions.primary_interaction(inventory, _hovered_index)
+			else:
+				_left_click_held = false
+				InventoryActions._end_primary_drag()
+				
 		if event.button_index == MOUSE_BUTTON_RIGHT:
 			if event.pressed:
 				_right_click_held = true
@@ -47,14 +57,6 @@ func _input(event: InputEvent) -> void:
 				_right_click_held = false 
 				InventoryActions.end_interaction_session()
 		
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				_left_click_held = true
-				if _hovered_index != -1:
-					InventoryActions.primary_interaction(inventory, _hovered_index)
-			else:
-				_left_click_held = false
-				InventoryActions._end_primary_drag()
 
 func create_slots():
 	for i in range(inventory.slots.size()):

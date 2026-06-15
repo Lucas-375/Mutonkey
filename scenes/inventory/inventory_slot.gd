@@ -3,10 +3,12 @@ class_name InventorySlot
 
 @export var index: int
 @export var inventory: Inventory
+@export var stack: ItemStack
 
 
 func update_slot():
-	var stack = inventory.slots[index]
+	if inventory and index:
+		stack = inventory.slots[index]
 	
 	if stack == null:
 		$Icon.hide()
@@ -14,6 +16,8 @@ func update_slot():
 		return
 	
 	if stack.item.display_texture:
+		print(stack.item.display_name)
+		print($Icon)
 		$Icon.show()
 		$Icon.texture = stack.item.display_texture
 	
