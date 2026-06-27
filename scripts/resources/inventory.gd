@@ -12,7 +12,7 @@ signal slot_changed(index: int)
 var slots: Array[ItemStack] = []
 
 func _init() -> void:
-	print(size)
+	print('inventory size: ', size)
 	slots.resize(size)
 
 func is_valid_index(index: int) -> bool:
@@ -33,6 +33,23 @@ func _set_slot(index: int, new_stack: ItemStack):
 ## Public method to set a slot's stack. Might be extended later.
 func set_slot(index: int, new_stack: ItemStack):
 	_set_slot(index, new_stack)
+
+## Method to set a slot's `quantity`.
+## Returns how much was added (positive) or removed (negative),
+## to achieve the given `quantity`.
+func set_slot_quantity(index: int, quantity: int = 1) -> int:
+	var slot_stack := get_slot(index)
+	if slot_stack == null:
+		return 0
+	
+	var change := quantity - slot_stack.quantity
+	
+	if change > 0:
+		add_to_stack(index, change)
+	elif change < 0:
+		remove_from_stack(index, abs(change))
+	
+	return change
 
 ## Returns the stack at `index`, or null if invalid.
 func get_slot(index: int) -> ItemStack:

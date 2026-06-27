@@ -16,8 +16,6 @@ func update_slot():
 		return
 	
 	if stack.item.display_texture:
-		print(stack.item.display_name)
-		print($Icon)
 		$Icon.show()
 		$Icon.texture = stack.item.display_texture
 	

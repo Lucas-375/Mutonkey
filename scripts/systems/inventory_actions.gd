@@ -5,9 +5,11 @@ static var _last_interacted_slot: int = -1
 static var _last_interacted_inv: Inventory = null
 
 static var _drag_inventory: Inventory = null
-static var _drag_starting_stack: ItemStack = null
+static var _drag_item: Item = null
+static var _drag_max_stack: int = 0
 static var _drag_indices: Array[int] = []
 
+static var _total_drag_pool: int = 0
 
 static func primary_interaction(inventory: Inventory, index: int):
 	var slot_stack := inventory.get_slot(index)
@@ -18,9 +20,12 @@ static func primary_interaction(inventory: Inventory, index: int):
 			_take_all(inventory, index)
 		return
 	
+	# Initialize drag session
 	_drag_indices = [index]
 	_drag_inventory = inventory
-	_drag_starting_stack = held	
+	_drag_item = held.item
+	_drag_max_stack = held.item.max_stack
+	_total_drag_pool = held.quantity
 
 ## The alternate interaction (Splif half, Drop single)
 static func secondary_interaction(inventory: Inventory, index: int):
@@ -36,9 +41,6 @@ static func secondary_interaction(inventory: Inventory, index: int):
 		_split_to_cursor(inventory, index)
 	elif held:
 		_drop_single_to_slot(inventory, index)
-	
-	print(str(_last_interacted_slot))
-
 
 static func end_interaction_session():
 	_last_interacted_inv = null
@@ -47,7 +49,10 @@ static func end_interaction_session():
 static func clean_up_drag():
 	_drag_indices = []
 	_drag_inventory = null
-	_drag_starting_stack = null
+	_drag_item = null
+	_drag_max_stack = 0
+	
+	_total_drag_pool = 0
 
 # --- Helpers ---
 
@@ -63,6 +68,66 @@ static func _end_primary_drag():
 	
 	clean_up_drag()
 
+static func _update_primary_drag(inventory: Inventory, index: int):
+	if inventory != _drag_inventory or index in _drag_indices:
+		return
+		
+	# Add current slot to the system
+	var slot_stack := _drag_inventory.get_slot(index)
+	if slot_stack == null or slot_stack.item == _drag_item:
+		_drag_indices.append(index)
+		
+		# Add this slot's items to the total drag pool ONCE
+		if slot_stack:
+			_total_drag_pool += slot_stack.quantity
+		
+		_distribute_held_stack()
+
+static func _distribute_held_stack():
+	var count := _drag_indices.size()
+	if count == 0:
+		return
+	
+	# Compute distribution
+	print('total drag pool = ', _total_drag_pool)
+	var amount_per_slot := int(_total_drag_pool / count)
+	var remainder := _total_drag_pool - amount_per_slot * count
+	
+	# Cap by max stack
+	var max_s := _drag_max_stack
+	if amount_per_slot > max_s:
+		print('Amount per slot exceded the max stack quantity!')
+		# Pass the extra items to the remainder for each item
+		remainder += (amount_per_slot - max_s) * count
+		# Set the amount per slot the the max/correct quantity
+		amount_per_slot = max_s
+	
+	print('amount per slot: ' + str(amount_per_slot))
+	print('remainder: ' + str(remainder))
+	print()
+	
+	# Apply logic to all slots
+	for idx in _drag_indices:
+		var slot_stack := _drag_inventory.get_slot(idx)
+		
+		if slot_stack:
+			# Updates remainder only if the slot had more items than amount_per_slot
+			var change := _drag_inventory.set_slot_quantity(idx, amount_per_slot)
+			remainder += abs(change) if change < 0 else 0
+			 
+		elif not slot_stack:
+			_drag_inventory.set_slot(idx, ItemStack.new(_drag_item, amount_per_slot))
+	
+	# Cursor gets remainder
+	if InventoryCursor.is_holding():
+		InventoryCursor.set_quantity(remainder)
+	else:
+		InventoryCursor.set_item_stack(ItemStack.new(_drag_item, remainder))
+	
+	print('final remainder = ', remainder)
+	#print('inventory cursor = ', InventoryCursor.get_item_stack().quantity)
+	print()
+
 static func _handle_single_place_or_swap(inventory: Inventory, index: int):
 	var slot_stack := inventory.get_slot(index)
 	var held := InventoryCursor.get_item_stack()
@@ -75,42 +140,6 @@ static func _handle_single_place_or_swap(inventory: Inventory, index: int):
 		_merge_stacks(inventory, index)
 	else:
 		_swap_with_cursor(inventory, index)
-
-static func _update_primary_drag(inventory: Inventory, index: int):
-	if inventory != _drag_inventory or index in _drag_indices:
-		return
-	
-	var slot_stack := _drag_inventory.get_slot(index)
-	
-	if slot_stack == null or _drag_starting_stack.item == slot_stack.item:
-		_drag_indices.append(index)
-
-static func _distribute_held_stack():
-	var held := InventoryCursor.get_item_stack()
-	if not held:
-		return
-	
-	var count := _drag_indices.size()
-	var amount_per_slot := int(float(held.quantity) / count)
-	
-	if amount_per_slot == 0:
-		return
-	
-	for idx in _drag_indices:
-		var slot_stack := _drag_inventory.get_slot(idx)
-		
-		if slot_stack == null or slot_stack.item == held.item:
-			var current_quantity := 0 if not slot_stack else slot_stack.quantity
-			var space := held.item.max_stack - current_quantity
-			
-			var to_add = min(space, amount_per_slot)
-			
-			if not slot_stack:
-				_drag_inventory.set_slot(idx, ItemStack.new(held.item, to_add))
-			else:
-				_drag_inventory.add_to_stack(idx, to_add)
-			
-			InventoryCursor.subtract(to_add)
 
 static func _take_all(inventory: Inventory, index: int):
 	InventoryCursor.set_item_stack(inventory.get_slot(index))

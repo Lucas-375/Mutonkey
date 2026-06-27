@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://dy1rcl6ch2o75"]
 
 [ext_resource type="Script" uid="uid://bxxqyxarkm4wy" path="res://scenes/inventory/item_drag_preview.gd" id="1_tj01u"]
-[ext_resource type="Texture2D" path="res://assets/art/Coin.png" id="2_guwgf"]
+[ext_resource type="Texture2D" uid="uid://bwct1g7qeedeh" path="res://assets/art/Coin.png" id="2_guwgf"]
 
-[node name="ItemDragPreview" type="Control"]
+[node name="ItemUI" type="Control"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 3
 anchors_preset = 0
