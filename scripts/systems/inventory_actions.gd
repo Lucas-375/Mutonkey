@@ -111,10 +111,7 @@ static func _distribute_held_stack():
 		var slot_stack := _drag_inventory.get_slot(idx)
 		
 		if slot_stack:
-			# Updates remainder only if the slot had more items than amount_per_slot
-			var change := _drag_inventory.set_slot_quantity(idx, amount_per_slot)
-			remainder += abs(change) if change < 0 else 0
-			 
+			_drag_inventory.set_slot_quantity(idx, amount_per_slot)
 		elif not slot_stack:
 			_drag_inventory.set_slot(idx, ItemStack.new(_drag_item, amount_per_slot))
 	
