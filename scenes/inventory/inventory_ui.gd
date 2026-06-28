@@ -17,7 +17,9 @@ var _left_click_held := false
 var _hovered_index := -1
 
 func _ready() -> void:
+	# Set up UI
 	grid_container.columns = columns
+	# Set up inventory
 	inventory.inventory_changed.connect(on_inventory_changed)
 	inventory.slot_changed.connect(on_slot_changed)
 	create_slots()
@@ -29,17 +31,20 @@ func _process(delta: float) -> void:
 	
 	_right_click_timer -= delta
 	
-	if _right_click_held and _right_click_timer <= 0:
-		_right_click_timer = _repeat_rate
+	if _right_click_held and _right_click_timer <= 0 and not _left_click_held:
+		_right_click_timer = _repeat_rate # Resets right click timer
 		InventoryActions.secondary_interaction(inventory, _hovered_index)
 	
-	if _left_click_held:
+	
+	if _left_click_held and not _right_click_held:
 		InventoryActions._update_primary_drag(inventory, _hovered_index)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
+				if _right_click_held:
+					return # Blocks left-click during right-click drag
 				_left_click_held = true
 				if _hovered_index != -1:
 					InventoryActions.primary_interaction(inventory, _hovered_index)
@@ -49,8 +54,10 @@ func _input(event: InputEvent) -> void:
 				
 		if event.button_index == MOUSE_BUTTON_RIGHT:
 			if event.pressed:
+				if _left_click_held:
+					return # Blocks right-click during left-click drag
 				_right_click_held = true
-				_right_click_timer = _initial_delay
+				_right_click_timer = _initial_delay # Resets right click timer
 				if _hovered_index != -1:
 					InventoryActions.secondary_interaction(inventory, _hovered_index)
 			else:
