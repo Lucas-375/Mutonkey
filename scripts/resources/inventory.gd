@@ -91,7 +91,7 @@ func remove_from_stack(index: int, amount: int = 1) -> int:
 	if stack == null:
 		return amount
 	
-	if amount <= stack.quantity:
+	if amount < stack.quantity:
 		stack.quantity -= amount
 		_set_slot(index, stack)
 		return 0
