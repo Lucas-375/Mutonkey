@@ -6,12 +6,8 @@ extends Control
 @export var columns: int = 8
 @export var slot_scene: PackedScene
 
-var _right_click_held := false
-var _right_click_timer := 0.0
-var _initial_delay := 0.2
-var _repeat_rate := 0.08
-
 var _left_click_held := false
+var _right_click_held := false
 
 ## Index hovered by mouse, -1 represents that no slot is hovered.
 var _hovered_index := -1
@@ -27,16 +23,14 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if _hovered_index == -1:
-		return
+		return # Returns if no index is being hovered
 	
-	_right_click_timer -= delta
-	
-	if _right_click_held and _right_click_timer <= 0 and not _left_click_held:
-		_right_click_timer = _repeat_rate # Resets right click timer
+	# Calls Primary and Secondary interactions
+	# Both block collisions of clicking the opposite button during the drag
+	if _right_click_held and not _left_click_held: # Blocks left-click
 		InventoryActions.secondary_interaction(inventory, _hovered_index)
 	
-	
-	if _left_click_held and not _right_click_held:
+	if _left_click_held and not _right_click_held: # Blocks right-click
 		InventoryActions._update_primary_drag(inventory, _hovered_index)
 
 func _input(event: InputEvent) -> void:
@@ -57,7 +51,6 @@ func _input(event: InputEvent) -> void:
 				if _left_click_held:
 					return # Blocks right-click during left-click drag
 				_right_click_held = true
-				_right_click_timer = _initial_delay # Resets right click timer
 				if _hovered_index != -1:
 					InventoryActions.secondary_interaction(inventory, _hovered_index)
 			else:
@@ -68,13 +61,15 @@ func _input(event: InputEvent) -> void:
 func create_slots():
 	for i in range(inventory.slots.size()):
 		var slot_instance := slot_scene.instantiate() as InventorySlot
+		# Set slot's variables
 		slot_instance.index = i
 		slot_instance.inventory = inventory
 		
+		# Connect the slot's signals to slot hovered / unhovered functions
 		slot_instance.mouse_entered.connect(func(): _on_slot_hovered(i))
 		slot_instance.mouse_exited.connect(func(): _on_slot_unhovered(i))
 		
-		grid_container.add_child(slot_instance)
+		grid_container.add_child(slot_instance) # Add instance to inventory
 
 func refresh_all():
 	for slot: InventorySlot in grid_container.get_children():

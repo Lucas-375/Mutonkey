@@ -41,6 +41,9 @@ static func secondary_interaction(inventory: Inventory, index: int):
 		_split_to_cursor(inventory, index)
 	elif held:
 		_drop_single_to_slot(inventory, index)
+	
+	_last_interacted_slot = index
+	_last_interacted_inv = inventory
 
 static func end_interaction_session():
 	_last_interacted_inv = null
@@ -168,6 +171,7 @@ static func _split_to_cursor(inventory: Inventory, index: int):
 	var slot_stack := inventory.get_slot(index)
 	var half = ceil(float(slot_stack.quantity) / 2)
 	var new_stack := ItemStack.new(slot_stack.item, half)
+	
 	InventoryCursor.set_item_stack(new_stack)
 	inventory.remove_from_stack(index, half)
 
@@ -176,9 +180,6 @@ static func _drop_single_to_slot(inventory: Inventory, index: int):
 	var held := InventoryCursor.get_item_stack()
 	
 	if not slot_stack:
-		_last_interacted_inv = inventory
-		_last_interacted_slot = index
-		
 		var new_stack := ItemStack.new(held.item, 1)
 		
 		inventory.set_slot(index, new_stack)
@@ -186,8 +187,5 @@ static func _drop_single_to_slot(inventory: Inventory, index: int):
 	
 	elif (slot_stack.item == held.item 
 	and slot_stack.quantity < slot_stack.item.max_stack):
-		_last_interacted_inv = inventory
-		_last_interacted_slot = index
-		
 		inventory.add_to_stack(index, 1)
 		InventoryCursor.subtract(1)
