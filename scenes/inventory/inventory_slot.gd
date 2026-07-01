@@ -7,7 +7,7 @@ class_name InventorySlot
 
 
 func update_slot():
-	if inventory and index:
+	if inventory and inventory.is_valid_index(index):
 		stack = inventory.slots[index]
 	
 	if stack == null:
