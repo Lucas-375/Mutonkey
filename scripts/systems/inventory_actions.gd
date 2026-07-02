@@ -26,6 +26,9 @@ static func primary_interaction(inventory: Inventory, index: int):
 	_drag_item = held.item
 	_drag_max_stack = held.item.max_stack
 	_total_drag_pool = held.quantity
+	if slot_stack:
+		# Add the first slot quantity to pool if there is a stack in that slot
+		_total_drag_pool += slot_stack.quantity
 
 ## The alternate interaction (Splif half, Drop single)
 static func secondary_interaction(inventory: Inventory, index: int):
