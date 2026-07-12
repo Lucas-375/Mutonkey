@@ -33,6 +33,7 @@ enabled=PackedStringArray("res://addons/anthonyec.camera_preview/plugin.cfg", "r
 [file_customization]
 
 folder_colors={
+"res://addons/": "yellow",
 "res://assets/": "orange",
 "res://data/": "purple",
 "res://scenes/": "blue",

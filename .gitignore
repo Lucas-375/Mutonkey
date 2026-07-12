@@ -19,3 +19,6 @@ mono_crash.*.json
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Project Time Tracker plugin .json that tracks time (constantly changing)
+project_time_traker.json
