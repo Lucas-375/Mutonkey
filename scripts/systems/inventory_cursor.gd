@@ -1,5 +1,8 @@
+## Global coordinatior tracking the floating item stack currently attached to the mouse cursor.
+## Serves as a central source of data for Inventory operations/movements.
 extends Node
 
+## Emitted whenever the current item stack changes 
 signal content_changed(new_stack: ItemStack)
 
 @export var _stack: ItemStack = null
@@ -20,22 +23,23 @@ func get_stack_quantity() -> int:
 func get_item() -> Item:
 	return _stack.item if is_holding() else null
 
-# Returns how much is left until the stack reaches its max quantity.
+## Returns how much is left until the stack reaches its max quantity.
 func get_space_left() -> int:
 	if not is_holding():
 		return 0
 	return _stack.item.max_stack - _stack.quantity
 
-## Sets the stack to `value`.
+## Updates the cursor stack to `value` and emit change signals.
+## Rejects operations if the incoming stack possesses an invalid item type or quantity.
 func set_item_stack(value: ItemStack):
-	if value and value.quantity <= 0:
+	if value and (not value.item or value.quantity <= 0):
 		return
 	_stack = value
 	content_changed.emit(_stack)
 
 ## Sets the stack from the given values `item` and `quantity`.
 func set_stack_from_values(item: Item, quantity: int):
-	if item and quantity and quantity <= 0:
+	if not item or quantity <= 0:
 		return
 	var new_stack := ItemStack.new(item, quantity)
 	set_item_stack(new_stack)
@@ -49,9 +53,8 @@ func is_holding():
 func can_accept(item: Item) -> bool:
 	return not is_holding() or item == _stack.item
 
-## Method to set stack to `quantity`.
-## Returns how much was added (positive) or removed (negative),
-## to achieve the given `quantity`.
+## Forces change on the current stack to a target `quantity` via math.
+## Returns the delta change (positive for items added, negative for items removed).
 func set_quantity(quantity: int) -> int:
 	if not _stack:
 		return 0

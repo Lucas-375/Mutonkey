@@ -1,10 +1,15 @@
+## Global ultility class for handling inventory movements.
+## This class manages mouse clicks, item swaps, stack splitting, and complex distribution.
+## Since this is a static class, it acts as a stateless manager across Inventory data.
 extends Node
 class_name InventoryActions
 
 static var _last_interacted_slot: int = -1
 static var _last_interacted_inv: Inventory = null
 
-static var _first_index: int = -1
+## The inventory slot where the current drag or interaction session started.
+## Used as a fallback if the session doesn't end up in as a drag session.
+static var _origin_index: int = -1
 
 static var _drag_started: bool = false
 static var _drag_inventory: Inventory = null
@@ -12,8 +17,11 @@ static var _drag_item: Item = null
 static var _drag_max_stack: int = 0
 static var _drag_indices: Array[int] = []
 
+## Total pool of items being currently being redistributed during a click-and-drag session.
+## It combines the cursor stack with any matching items that are dragged over.
 static var _total_drag_pool: int = 0
 
+## Primary mouse interaction with inventory (drag, take all, place all, merge, swap)
 static func primary_interaction(inventory: Inventory, index: int):
 	var slot_stack := inventory.get_slot(index)
 	var held := InventoryCursor.get_item_stack()
@@ -24,7 +32,7 @@ static func primary_interaction(inventory: Inventory, index: int):
 		return
 	
 	# Initialize drag session
-	_first_index = index
+	_origin_index = index
 	
 	_drag_started = true
 	_drag_inventory = inventory
@@ -83,7 +91,7 @@ static func _end_primary_drag():
 		_distribute_held_stack()
 	else:
 		# Handle single slot interaction (place or swap)
-		_handle_single_place_or_swap(_drag_inventory, _first_index)
+		_handle_single_place_or_swap(_drag_inventory, _origin_index)
 	
 	clean_up_drag()
 

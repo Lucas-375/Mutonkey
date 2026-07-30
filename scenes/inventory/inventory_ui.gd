@@ -21,7 +21,7 @@ func _ready() -> void:
 	create_slots()
 	refresh_all()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if _hovered_index == -1:
 		return # Returns if no index is being hovered
 	

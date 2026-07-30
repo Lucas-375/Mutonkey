@@ -34,6 +34,13 @@ func _set_slot(index: int, new_stack: ItemStack):
 func set_slot(index: int, new_stack: ItemStack):
 	_set_slot(index, new_stack)
 
+## Sets a slot's stack from given values `item` and `quantity`.
+func set_slot_from_values(index: int, item: Item, quantity: int):
+	if not item or quantity <= 0:
+		return
+	var new_stack = ItemStack.new(item, quantity)
+	set_slot(index, new_stack)
+
 ## Method to set a slot's `quantity`.
 ## Returns how much was added (positive) or removed (negative),
 ## to achieve the given `quantity`.
@@ -66,6 +73,13 @@ func get_slots() -> Array[ItemStack]:
 		else:
 			copy.append(null)
 	return copy
+
+## Returns how much is left until the slot reaches its max quantity.
+func get_slot_space(index: int) -> int:
+	if not is_valid_index(index):
+		return 0
+	var stack = get_slot(index)
+	return stack.item.max_stack - stack.quantity
 
 ## Adds up to `amount` items to the stack at `index`.
 ## Returns the leftover amount that could not fit.
