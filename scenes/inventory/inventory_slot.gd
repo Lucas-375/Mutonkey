@@ -1,26 +1,42 @@
 extends Control
 class_name InventorySlot
 
+@onready var item_ui: Control = $ItemUI
+@onready var icon: TextureRect = $ItemUI/Icon
+@onready var count_label: Label = $ItemUI/CountLabel
+
 @export var index: int
 @export var inventory: Inventory
 @export var stack: ItemStack
 
+func _ready() -> void:
+	# Ignore mouse on child nodes so clicks pass through to the main slot
+	item_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func update_slot():
 	if inventory and inventory.is_valid_index(index):
-		stack = inventory.slots[index]
+		stack = inventory.get_slot(index)
 	
-	if stack == null:
-		$Icon.hide()
-		$CountLabel.hide()
+	# If slot is empty, hide the entire UI layer and clear the image
+	if stack == null or stack.item == null:
+		item_ui.hide()
+		icon.texture = null
 		return
 	
-	if stack.item.display_texture:
-		$Icon.show()
-		$Icon.texture = stack.item.display_texture
+	# Item exists, so show the UI container
+	item_ui.show()
 	
-	if stack.quantity == 1:
-		$CountLabel.hide()
+	if stack.item.display_texture:
+		icon.show()
+		icon.texture = stack.item.display_texture
 	else:
-		$CountLabel.show()
-		$CountLabel.text = str(stack.quantity)
+		icon.hide()
+	
+	# Toggle count label based on quantity
+	if stack.quantity == 1:
+		count_label.hide()
+	else:
+		count_label.show()
+		count_label.text = str(stack.quantity)
