@@ -50,9 +50,3 @@ offset_top = 498.0
 offset_right = 798.0
 offset_bottom = 552.0
 text = "Max Add (OFF)"
-
-[node name="InventorySlot" parent="." instance=ExtResource("3_536qi")]
-offset_left = 518.0
-offset_top = 411.0
-offset_right = 582.0
-offset_bottom = 475.0

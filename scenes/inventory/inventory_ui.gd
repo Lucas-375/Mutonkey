@@ -1,6 +1,7 @@
 extends Control
 
 @onready var grid_container: GridContainer = $GridContainer
+@onready var cursor_item_ui: ItemUIDisplay = $CursorItemUI
 
 @export var inventory: Inventory
 @export var columns: int = 8
@@ -15,16 +16,24 @@ var _hovered_index := -1
 func _ready() -> void:
 	# Set up UI
 	grid_container.columns = columns
+
 	# Set up inventory
 	inventory.inventory_changed.connect(on_inventory_changed)
 	inventory.slot_changed.connect(on_slot_changed)
 	create_slots()
 	refresh_all()
 
+	# Set up cursor item display
+	InventoryCursor.content_changed.connect(on_cursor_content_changed)
+
 func _process(_delta: float) -> void:
+	# Update the floating item position to follow the cursor smoothly
+	if cursor_item_ui.visible:
+		cursor_item_ui.global_position = get_global_mouse_position()
+
 	if _hovered_index == -1:
 		return # Returns if no index is being hovered
-	
+
 	# Calls Primary and Secondary interactions
 	# Both block collisions of clicking the opposite button during the drag
 	if _right_click_held and not _left_click_held: # Blocks left-click
@@ -71,10 +80,19 @@ func create_slots():
 		
 		grid_container.add_child(slot_instance) # Add instance to inventory
 
+## Updates the cursor item display to match the item stack in the InventoryCursor singleton. If there is no item stack, it hides the display.
+func on_cursor_content_changed(cursor_stack: ItemStack):
+	if cursor_stack == null:
+		cursor_item_ui.update_display(null, 0)
+	else:
+		cursor_item_ui.update_display(cursor_stack.item, cursor_stack.quantity)
+
+## Refreshes all slots in the inventory UI to match the current state of the inventory. This is useful when the inventory has changed significantly, such as after adding or removing items.
 func refresh_all():
 	for slot: InventorySlot in grid_container.get_children():
 		slot.update_slot()
 
+## Refreshes a specific slot in the inventory UI to match the current state of the inventory at the given index.
 func refresh_index(index: int):
 	if not inventory.is_valid_index(index):
 		return

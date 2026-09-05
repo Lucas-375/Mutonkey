@@ -1,26 +1,24 @@
 [gd_scene load_steps=3 format=3 uid="uid://dy1rcl6ch2o75"]
 
-[ext_resource type="Script" uid="uid://bxxqyxarkm4wy" path="res://scenes/inventory/item_drag_preview.gd" id="1_tj01u"]
-[ext_resource type="Texture2D" uid="uid://bwct1g7qeedeh" path="res://assets/art/Coin.png" id="2_guwgf"]
+[ext_resource type="Script" uid="uid://bxxqyxarkm4wy" path="res://scenes/inventory/item_ui_display.gd" id="1_rlcbq"]
+[ext_resource type="Texture2D" uid="uid://bwct1g7qeedeh" path="res://assets/art/Coin.png" id="2_628jo"]
 
-[node name="ItemUI" type="Control"]
+[node name="ItemUIDisplay" type="Control"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 3
 anchors_preset = 0
-offset_left = -32.0
-offset_top = -32.0
-offset_right = 32.0
-offset_bottom = 32.0
+offset_right = 64.0
+offset_bottom = 64.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-script = ExtResource("1_tj01u")
+script = ExtResource("1_rlcbq")
 
 [node name="Icon" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 0
 offset_right = 16.0
 offset_bottom = 16.0
-texture = ExtResource("2_guwgf")
+texture = ExtResource("2_628jo")
 
 [node name="CountLabel" type="Label" parent="."]
 layout_mode = 0

@@ -1,12 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjhconksekqvj"]
+[gd_scene load_steps=3 format=3 uid="uid://bjhconksekqvj"]
 
 [ext_resource type="Script" uid="uid://ckivomffcd3e0" path="res://scenes/inventory/inventory_ui.gd" id="1_qedko"]
+[ext_resource type="PackedScene" uid="uid://dy1rcl6ch2o75" path="res://scenes/inventory/item_ui_display.tscn" id="2_3yj3k"]
 
 [node name="InventoryUI" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_qedko")
-columns = null
 
 [node name="GridContainer" type="GridContainer" parent="."]
 custom_minimum_size = Vector2(64, 64)
@@ -19,3 +19,10 @@ offset_right = 32.0
 offset_bottom = 64.0
 grow_horizontal = 2
 columns = 8
+
+[node name="CursorItemUI" parent="." instance=ExtResource("2_3yj3k")]
+layout_mode = 1
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 64.0
+offset_bottom = 64.0

@@ -6,7 +6,7 @@ var player: Player
 func init(p: Player):
 	player = p
 
-func move(delta: float):
+func move(_delta: float):
 	var input = Vector2(
 		Input.get_action_strength('move_right') - Input.get_action_strength("move_left"),
 		Input.get_action_strength('move_down') - Input.get_action_strength('move_up')

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://r6f7fqwurg73" path="res://scenes/inventory/inventory_slot.gd" id="1_c7w7p"]
 [ext_resource type="Texture2D" uid="uid://dy8onfh456cu1" path="res://assets/art/slot_background.png" id="2_0uvgv"]
-[ext_resource type="PackedScene" uid="uid://dy1rcl6ch2o75" path="res://scenes/inventory/item_ui.tscn" id="3_c7w7p"]
+[ext_resource type="PackedScene" uid="uid://dy1rcl6ch2o75" path="res://scenes/inventory/item_ui_display.tscn" id="3_c7w7p"]
 
 [node name="InventorySlot" type="Control"]
 custom_minimum_size = Vector2(64, 64)
@@ -19,7 +19,7 @@ offset_right = 64.0
 offset_bottom = 64.0
 texture = ExtResource("2_0uvgv")
 
-[node name="ItemUI" parent="." instance=ExtResource("3_c7w7p")]
+[node name="ItemUIDisplay" parent="." instance=ExtResource("3_c7w7p")]
 layout_mode = 0
 offset_left = 0.0
 offset_top = 0.0
