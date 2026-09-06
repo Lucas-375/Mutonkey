@@ -32,6 +32,14 @@ func _physics_process(_delta: float) -> void:
         # Check for possible transitions
         current_node_state._on_next_transitions()
 
+## Called when a state is entered, to be overridden by subclasses if needed
+func _on_enter_state(_node_state_name: String) -> void:
+    pass
+
+## Called when a state is exited, to be overridden by subclasses if needed
+func _on_exit_state(_node_state_name: String) -> void:
+    pass
+
 func transition_to(node_state_name: String) -> void:
     if node_state_name.to_lower() == current_node_state_name:
         return
@@ -42,8 +50,10 @@ func transition_to(node_state_name: String) -> void:
         return 
 
     if current_node_state:
+        _on_exit_state(current_node_state_name) # Call the instantiated state machine's exit logic
         current_node_state._on_exit()
     
+    _on_enter_state(new_node_state.name.to_lower()) # Call the instantiated state machine's enter logic
     new_node_state._on_enter()
 
     # Update the current state and its name
