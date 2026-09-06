@@ -1,3 +1,7 @@
+## Base class for all states used by NodeStateMachine.
+## Defines lifecycle callbacks for entering, exiting, and processing states,
+## which are called automatically by the state machine.
+## Subclasses should override these methods to implement custom behavior.
 class_name NodeState
 extends Node
 

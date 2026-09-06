@@ -1,3 +1,7 @@
+## Base class for all state machines.
+## Registers state machine children, manages active state, and handles transitions 
+## triggered by signals. Provides lifecycle hooks (_on_enter_state and _on_exit_state)
+## for subclasses to implement custom logic when a state changes.
 class_name NodeStateMachine
 extends Node
 
