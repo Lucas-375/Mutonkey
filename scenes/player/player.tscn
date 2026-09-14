@@ -1,6 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://c5k8k1aqstiqx"]
+[gd_scene load_steps=8 format=3 uid="uid://c5k8k1aqstiqx"]
 
 [ext_resource type="Script" uid="uid://bu468ydrlu40n" path="res://scenes/player/player.gd" id="1_8afob"]
+[ext_resource type="Script" uid="uid://bwg1cdqi5q2rj" path="res://scenes/player/state_machines/movement/movement_state_machine.gd" id="2_gmlin"]
+[ext_resource type="Script" uid="uid://dmh6vy8ge2e0j" path="res://scenes/player/components/movement_component.gd" id="3_gmlin"]
+[ext_resource type="Script" uid="uid://dflhni64lq5oo" path="res://scenes/player/state_machines/movement/idle_state.gd" id="3_lvxji"]
+[ext_resource type="Script" uid="uid://c2homn3swn1rd" path="res://scenes/player/state_machines/movement/run_state.gd" id="4_p47bc"]
+[ext_resource type="Script" uid="uid://dldvai6wvn4ep" path="res://scenes/player/state_machines/movement/dash_state.gd" id="5_75vfm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x7p2l"]
 size = Vector2(13, 13)
@@ -8,13 +13,12 @@ size = Vector2(13, 13)
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 6
 script = ExtResource("1_8afob")
-move_speed = null
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_left = -8.0
 offset_top = -16.0
 offset_right = 8.0
-color = Color(0.023310686, 0.9778829, 0.44675505, 1)
+color = Color(0, 1, 0, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -8)
@@ -24,3 +28,29 @@ shape = SubResource("RectangleShape2D_x7p2l")
 zoom = Vector2(3.5, 3.5)
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
+
+[node name="MovementStateMachine" type="Node" parent="." node_paths=PackedStringArray("movement_component", "initial_node_state")]
+script = ExtResource("2_gmlin")
+movement_component = NodePath("../MovementComponent")
+initial_node_state = NodePath("IdleState")
+metadata/_custom_type_script = "uid://bwg1cdqi5q2rj"
+
+[node name="IdleState" type="Node" parent="MovementStateMachine"]
+script = ExtResource("3_lvxji")
+metadata/_custom_type_script = "uid://dflhni64lq5oo"
+
+[node name="RunState" type="Node" parent="MovementStateMachine"]
+script = ExtResource("4_p47bc")
+speed = 150.0
+metadata/_custom_type_script = "uid://c2homn3swn1rd"
+
+[node name="DashState" type="Node" parent="MovementStateMachine"]
+script = ExtResource("5_75vfm")
+dash_duration = 0.4
+dash_cooldown = 0.5
+metadata/_custom_type_script = "uid://dldvai6wvn4ep"
+
+[node name="MovementComponent" type="Node" parent="." node_paths=PackedStringArray("character")]
+script = ExtResource("3_gmlin")
+character = NodePath("..")
+metadata/_custom_type_script = "uid://dmh6vy8ge2e0j"
