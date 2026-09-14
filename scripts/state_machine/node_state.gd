@@ -5,16 +5,18 @@
 class_name NodeState
 extends Node
 
+var movement_component: MovementComponent
+
 @warning_ignore('unused_signal')
 signal transition
 
 func _ready() -> void:
 	pass
 
-func _process(_delta: float) -> void:
+func _update(_delta: float) -> void:
 	pass
 
-func _physics_process(_delta: float) -> void:
+func _physics_update(_delta: float) -> void:
 	pass
 
 ## Called when the state is entered

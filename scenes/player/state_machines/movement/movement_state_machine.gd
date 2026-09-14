@@ -4,4 +4,10 @@
 class_name MovementStateMachine
 extends NodeStateMachine
 
-@export var movement_component: Variant
+@export var movement_component: MovementComponent
+
+func _on_state_registration(_node_state_name: String) -> void:
+    var node_state = node_states.get(_node_state_name) as NodeState
+
+    if node_state:
+        node_state.movement_component = movement_component

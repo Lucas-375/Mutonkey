@@ -4,7 +4,7 @@
 [ext_resource type="TileSet" uid="uid://3e5s0bxyiuoa" path="res://data/tilesets/place_holder_tileset.tres" id="2_yxvuh"]
 [ext_resource type="PackedScene" uid="uid://c5k8k1aqstiqx" path="res://scenes/player/player.tscn" id="3_80h47"]
 
-[node name="TestCollectables" type="Node2D"]
+[node name="TestPlayerMovement" type="Node2D"]
 
 [node name="GameScreen" parent="." instance=ExtResource("1_7m2tj")]
 visible = false
