@@ -13,7 +13,8 @@ var current_node_state_name: String
 var parent_name: String
 
 func _ready() -> void:
-    parent_name = get_parent().name
+	print("physics processing:", self.is_physics_processing())
+	parent_name = get_parent().name
 
 	for child in get_children():
 		if child is NodeState:
@@ -29,44 +30,47 @@ func _ready() -> void:
 		current_node_state_name = initial_node_state.name.to_lower()
 
 func _process(_delta: float) -> void:
-    if current_node_state:
-        current_node_state._process(_delta)
+	if current_node_state:
+		current_node_state._update(_delta)
 
 func _physics_process(_delta: float) -> void:
-    if current_node_state:
-        current_node_state._physics_process(_delta)
-        # Check for possible transitions
-        current_node_state._on_next_transitions()
+	if current_node_state:
+		current_node_state._physics_update(_delta)
+		# Check for possible transitions
+		current_node_state._on_next_transitions()
+
 ## Called when a state is registered, to be overridden by subclasses if needed
 func _on_state_registration(_node_state_name: String) -> void:
 	pass
 
 ## Called when a state is entered, to be overridden by subclasses if needed
 func _on_enter_state(_node_state_name: String) -> void:
-    pass
+	pass
 
 ## Called when a state is exited, to be overridden by subclasses if needed
 func _on_exit_state(_node_state_name: String) -> void:
-    pass
+	pass
 
+## Callback function to handle state transitions. 
+## This method is connected to the transition signal of each NodeState.
 func transition_to(node_state_name: String) -> void:
-    if node_state_name.to_lower() == current_node_state_name:
-        return
-    
-    var new_node_state: NodeState = node_states.get(node_state_name.to_lower())
+	if node_state_name.to_lower() == current_node_state_name:
+		return
+	
+	var new_node_state: NodeState = node_states.get(node_state_name.to_lower())
 
-    if not new_node_state:
-        return 
+	if not new_node_state:
+		return 
 
-    if current_node_state:
-        _on_exit_state(current_node_state_name) # Call the instantiated state machine's exit logic
-        current_node_state._on_exit()
-    
-    _on_enter_state(new_node_state.name.to_lower()) # Call the instantiated state machine's enter logic
-    new_node_state._on_enter()
+	if current_node_state:
+		_on_exit_state(current_node_state_name) # Call the instantiated state machine's exit logic
+		current_node_state._on_exit()
+	
+	_on_enter_state(new_node_state.name.to_lower()) # Call the instantiated state machine's enter logic
+	new_node_state._on_enter()
 
-    # Update the current state and its name
-    current_node_state = new_node_state
-    current_node_state_name = current_node_state.name.to_lower()
-    
-    # print(parent_name, " -> Current State: ", current_node_state_name)
+	# Update the current state and its name
+	current_node_state = new_node_state
+	current_node_state_name = current_node_state.name.to_lower()
+	
+	# print(parent_name, " -> Current State: ", current_node_state_name)
