@@ -4,8 +4,6 @@ class_name MovementComponent
 extends Node
 
 @export var character: CharacterBody2D
-# ## The player's max speed
-# @export var speed: float = 100.0
 
 ## The player's current velocity
 var velocity: Vector2 = Vector2.ZERO
@@ -14,13 +12,25 @@ var direction: Vector2 = Vector2.ZERO
 ## The player's last movement direction, used for dash and other movement logic
 var last_movement_direction: Vector2 = Vector2.ZERO
 
-## The player can dash if this is true. This is set to false when the player dashes, and reset to true after the dash cooldown.
+## The player can move if this is true.
+## Some specific actions within the overall movement, such as dashing might be overwritten 
+## by other variables such as `can_dash`.
+var can_move: bool = true:
+    set(value):
+        can_move = value
+        if value == false:
+            zero_velocity()
+## The player can dash if this is true. 
+## This is set to false when the player dashes, and reset to true after the dash cooldown.
 var can_dash: bool = true
 
 ## The player's standard/base run speed. Set by RunState on registration.
 var run_speed: float = 0
 
 func set_direction(new_direction: Vector2) -> void:
+    if not can_move:
+        return
+    
     if new_direction != Vector2.ZERO:
         last_movement_direction = direction
     direction = new_direction.normalized()
@@ -39,6 +49,9 @@ func set_velocity(new_velocity: Vector2) -> void:
         character.velocity = new_velocity
 
 func _physics_process(_delta: float) -> void:
+    if not can_move:
+        return
+    
     if character:
         # calculate_velocity()
         character.velocity = velocity
