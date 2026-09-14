@@ -15,16 +15,18 @@ var parent_name: String
 func _ready() -> void:
     parent_name = get_parent().name
 
-    for child in get_children():
-        if child is NodeState:
-            node_states[child.name.to_lower()] = child # Add child to dict
-            child.transition.connect(transition_to) # Set up transition signal connection
-    
-    # Set the initial state
-    if initial_node_state:
-        initial_node_state._on_enter()
-        current_node_state = initial_node_state
-        current_node_state_name = initial_node_state.name.to_lower()
+	for child in get_children():
+		if child is NodeState:
+			node_states[child.name.to_lower()] = child # Add child to dict
+			_on_state_registration(child.name.to_lower()) # Call the instantiated state machine's registration logic
+			child.transition.connect(transition_to) # Set up transition signal connection
+
+	# Set the initial state
+	if initial_node_state:
+		_on_enter_state(initial_node_state.name.to_lower()) # Call the instantiated state machine's enter logic
+		initial_node_state._on_enter()
+		current_node_state = initial_node_state
+		current_node_state_name = initial_node_state.name.to_lower()
 
 func _process(_delta: float) -> void:
     if current_node_state:
@@ -35,6 +37,9 @@ func _physics_process(_delta: float) -> void:
         current_node_state._physics_process(_delta)
         # Check for possible transitions
         current_node_state._on_next_transitions()
+## Called when a state is registered, to be overridden by subclasses if needed
+func _on_state_registration(_node_state_name: String) -> void:
+	pass
 
 ## Called when a state is entered, to be overridden by subclasses if needed
 func _on_enter_state(_node_state_name: String) -> void:
