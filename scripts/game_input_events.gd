@@ -1,3 +1,4 @@
+extends Node
 ## Autoload responsible for all game input events.
 ## Contains functions to return what the input means, such as a Vector or bool.
 
