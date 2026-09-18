@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://bu468ydrlu40n" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="Script" uid="uid://bwg1cdqi5q2rj" path="res://scenes/player/state_machines/movement/movement_state_machine.gd" id="2_gmlin"]
-[ext_resource type="Script" uid="uid://dmh6vy8ge2e0j" path="res://scenes/player/components/movement_component.gd" id="3_gmlin"]
+[ext_resource type="Script" uid="uid://dmh6vy8ge2e0j" path="res://scripts/components/entities/movement_component.gd" id="3_gmlin"]
 [ext_resource type="Script" uid="uid://dflhni64lq5oo" path="res://scenes/player/state_machines/movement/idle_state.gd" id="3_lvxji"]
 [ext_resource type="Script" uid="uid://c2homn3swn1rd" path="res://scenes/player/state_machines/movement/run_state.gd" id="4_p47bc"]
 [ext_resource type="Script" uid="uid://dldvai6wvn4ep" path="res://scenes/player/state_machines/movement/dash_state.gd" id="5_75vfm"]
-[ext_resource type="Script" uid="uid://cg34pg52y5ij" path="res://scenes/player/components/health_component.gd" id="7_0owmy"]
+[ext_resource type="Script" uid="uid://cg34pg52y5ij" path="res://scripts/components/entities/health_component.gd" id="7_0owmy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x7p2l"]
 size = Vector2(13, 13)
