@@ -7,7 +7,8 @@ extends Node
 
 @export var initial_node_state: NodeState
 
-var node_states: Dictionary[String, NodeState] = {}
+## A dictionary to hold all registered node states, keyed by their lowercase names.
+var states: Dictionary[String, NodeState] = {}
 var current_node_state: NodeState
 var current_node_state_name: String
 var parent_name: String
@@ -18,7 +19,7 @@ func _ready() -> void:
 
 	for child in get_children():
 		if child is NodeState:
-			node_states[child.name.to_lower()] = child # Add child to dict
+			states[child.name.to_lower()] = child # Add child to dict
 			_on_state_registration(child.name.to_lower()) # Call the instantiated state machine's registration logic
 			child.transition.connect(transition_to) # Set up transition signal connection
 
@@ -57,7 +58,7 @@ func transition_to(node_state_name: String) -> void:
 	if node_state_name.to_lower() == current_node_state_name:
 		return
 	
-	var new_node_state: NodeState = node_states.get(node_state_name.to_lower())
+	var new_node_state: NodeState = states.get(node_state_name.to_lower())
 
 	if not new_node_state:
 		return 
